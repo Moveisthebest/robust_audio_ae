@@ -6,7 +6,7 @@
 # contained in the LICENCE file in this directory.
 
 import sys
-import commands
+import subprocess
 import time
 import math
 import os
@@ -57,7 +57,7 @@ def main(out_path, in_path):
 
     _, tmppath = tempfile.mkstemp()
     librosa.output.write_wav(tmppath, rcv_sig, fs)
-    commands.getoutput('ffmpeg -y -i %s -acodec pcm_s16le -ac %d -ar %d %s' % (tmppath, nchannel, fs, in_path))
+    subprocess.getstatusoutput('ffmpeg -y -i %s -acodec pcm_s16le -ac %d -ar %d %s' % (tmppath, nchannel, fs, in_path))
     os.remove(tmppath)
 
     stream.close()

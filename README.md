@@ -10,11 +10,15 @@ You can find generated examples at [our project page](https://yumetaro.info/proj
 
 1. Install the dependencies
 
-- librosa
+- librosa == 0.4.0
 - numpy
 - pyaudio
 - scipy
 - tensorflow (<= 1.8.0)
+
+Note that you need to install portaudio before the pyaudio.
+Use conda install portaudio pyaudio.
+
 
 2. Clone Mozilla's DeepSpeech into a directory named `DeepSpeech`
 
@@ -47,6 +51,9 @@ $ md5sum models/output_graph.pb
 
 6. Convert the .pb to a TensorFlow checkpoint file
 
+Note that in Deepspeech v0.1.0, there isn't the checkpoint file, we need to use make_checkpoint.py to convert the .pb file to checkpoint file.
+In later version, the author of the Deepspeech provide the checkpoint file that we can use the checkpoint straightly.
+
 ```
 $ python make_checkpoint.py
 ```
@@ -57,21 +64,22 @@ $ python make_checkpoint.py
 
 ### Generate adversarial examples
 
-Let us `sample.wav` to be a 16kHz mono wav file to add perturbations, and `rir` to be a directory containing room impulse responses.
+Let us `owl.wav` to be a 16kHz mono wav file to add perturbations, and `rir` to be a directory containing room impulse responses.
 
 Then, you can generate audio adversarial examples recognized as "hello world" as follows:
 
 ```
 $ mkdir results
-$ python attack.py --in sample.wav --imp rir/*.wav --target "hello world" --out results
+$ python attack.py --in owl.wav --imp rir/*.wav --target "hello world" --out results
 ```
+By using the NVIDIA Tesla V100(32GB) GPU, it needs about 1.3s training an iteration.
 
 ### Test generated adversarial examples
 
 1. Playback and record the generated adversarial example
 
 ```
-$ python record.py ae.wav ae_recorded.wav
+$ python record.py ae.wav recorded.wav
 ```
 
 2. Recognize with the DeepSpeech
@@ -80,12 +88,13 @@ $ python record.py ae.wav ae_recorded.wav
 $ python recognize.py models/output_graph.pb ae_recorded.wav models/alphabet.txt models/lm.binary models/trie
 ```
 
-3. Check the obtained transcription
+or use
 
 ```
-$ cat ae_recorded.txt
-hello world
+$ deepspeech models/output_graph.pb recorded.wav models/alphabet.txt models/lm.binary models/trie
 ```
+by doing this, you need to pip install deepspeech-gpu==0.1.0 firstly.
+
 
 ## Notice
 

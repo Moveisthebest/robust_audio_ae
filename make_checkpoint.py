@@ -55,6 +55,9 @@ def make_checkpoint(model_path, audio_path, save_path):
             # We just want it to not crash.
             tf.app.flags.FLAGS.alphabet_config_path = \
                 os.path.join(os.path.dirname(__file__), 'DeepSpeech/data/alphabet.txt')
+            
+            # Make it stop complaining
+            tf.app.flags.FLAGS.decoder_library_path = "."
             DeepSpeech.initialize_globals()
             logits2 = DeepSpeech.BiRNN(new_input, [len(mfcc)], [0]*10)
 

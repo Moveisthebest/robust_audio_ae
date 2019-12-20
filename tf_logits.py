@@ -80,6 +80,9 @@ def get_logits(new_input, length, first=[]):
         # Okay, so this is ugly again.
         # We just want it to not crash.
         tf.app.flags.FLAGS.alphabet_config_path = os.path.join(os.path.dirname(__file__), "DeepSpeech/data/alphabet.txt")
+
+        # Stop the annoying warnings
+        tf.app.flags.FLAGS.decoder_library_path = "."
         DeepSpeech.initialize_globals()
 
     batch_size = new_input.get_shape()[0]
